@@ -3,15 +3,14 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 class MultipartRequest {
-  static const MethodChannel _channel =
-      const MethodChannel('multipart_request');
+  static const MethodChannel _channel = MethodChannel('multipart_request');
 
-  String _url;
+  late String _url;
   var _headers = {}, _fields = {};
   var _files = [];
 
   setUrl(String url) {
-    this._url = url;
+    _url = url;
   }
 
   addHeader(key, value) {
@@ -19,7 +18,7 @@ class MultipartRequest {
   }
 
   addHeaders(Map<String, String> headers) {
-    this._headers.addAll(headers);
+    _headers.addAll(headers);
   }
 
   addField(key, value) {
@@ -27,20 +26,15 @@ class MultipartRequest {
   }
 
   addFields(Map<String, String> fields) {
-    this._fields.addAll(fields);
+    _fields.addAll(fields);
   }
 
   addFile(key, path) {
     _files.add({"field": key, "path": path});
   }
 
-  Response send() {
-    var finalBlock = {
-      "url": _url,
-      "headers": _headers,
-      "fields": _fields,
-      "files": _files,
-    };
+  Response  send() {
+    var finalBlock = {"url": _url, "headers": _headers, "fields": _fields, "files": _files};
 
     _channel.invokeMethod('multipartRequest', finalBlock);
     var controller = StreamController<int>();
@@ -65,7 +59,9 @@ class MultipartRequest {
 
           break;
         default:
+          break;
       }
+      return Future(() => null);
     });
 
     return response;
@@ -73,6 +69,6 @@ class MultipartRequest {
 }
 
 class Response {
-  Stream<int> progress;
-  Function onComplete, onError;
+  late Stream<int> progress;
+  late Function onComplete, onError;
 }
